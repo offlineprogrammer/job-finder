@@ -1,0 +1,27 @@
+{
+  "name": "@job-finder/search-management",
+  "version": "1.0.0",
+  "description": "Search Management Service - Saved searches and alerts",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@job-finder/types": "*",
+    "@job-finder/utils": "*",
+    "@job-finder/aws-sdk": "*",
+    "@job-finder/config": "*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.130",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  }
+}

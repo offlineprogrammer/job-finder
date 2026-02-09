@@ -1,0 +1,51 @@
+{
+  "name": "job-finder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Job Finder Platform - AWS Serverless Architecture",
+  "workspaces": [
+    "infrastructure",
+    "services/*",
+    "packages/*",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .prettierignore",
+    "deploy:infra": "cd infrastructure && npm run deploy",
+    "deploy:services": "npm run deploy --workspace=services/*",
+    "deploy:frontend": "cd frontend && npm run deploy",
+    "setup": "npm install && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/job-finder.git"
+  },
+  "keywords": [
+    "aws",
+    "serverless",
+    "lambda",
+    "cdk",
+    "job-search",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT"
+}

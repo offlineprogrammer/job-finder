@@ -1,0 +1,23 @@
+{
+  "name": "@job-finder/aws-sdk",
+  "version": "1.0.0",
+  "description": "AWS SDK wrappers for Job Finder Platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.490.0",
+    "@aws-sdk/lib-dynamodb": "^3.490.0",
+    "@aws-sdk/client-secrets-manager": "^3.490.0",
+    "@aws-sdk/client-eventbridge": "^3.490.0",
+    "@job-finder/types": "*",
+    "@job-finder/utils": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

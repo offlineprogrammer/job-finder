@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.cdk.out/
+cdk.out/
+.aws-sam/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Testing
+coverage/
+.nyc_output/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+*.pem
+.cache/

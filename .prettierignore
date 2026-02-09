@@ -1,0 +1,9 @@
+node_modules
+dist
+.next
+*.min.js
+*.min.css
+coverage
+.cdk.out
+cdk.out
+.aws-sam
