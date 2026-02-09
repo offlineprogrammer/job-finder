@@ -2,11 +2,7 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -25,31 +21,13 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@job-finder/types": [
-        "../packages/types/src"
-      ],
-      "@job-finder/utils": [
-        "../packages/utils/src"
-      ],
-      "@job-finder/aws-sdk": [
-        "../packages/aws-sdk/src"
-      ],
-      "@job-finder/config": [
-        "../packages/config/src"
-      ]
+      "@/*": ["./src/*"],
+      "@job-finder/types": ["../packages/types/src"],
+      "@job-finder/utils": ["../packages/utils/src"],
+      "@job-finder/aws-sdk": ["../packages/aws-sdk/src"],
+      "@job-finder/config": ["../packages/config/src"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", ".next"]
 }
