@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 /**
  * Standard tags for all resources
@@ -14,7 +15,7 @@ export interface StandardTags {
  * Apply standard tags to a construct
  */
 export function applyStandardTags(
-  construct: cdk.Construct,
+  construct: Construct,
   environment: string,
   additionalTags?: Record<string, string>
 ): void {
