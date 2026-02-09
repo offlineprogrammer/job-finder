@@ -19,6 +19,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: Build shared packages
+        run: |
+          npm run build --workspace=packages/types
+          npm run build --workspace=packages/utils
+          npm run build --workspace=packages/aws-sdk
+          npm run build --workspace=packages/config
+      
       - name: Lint
         run: npm run lint
       
