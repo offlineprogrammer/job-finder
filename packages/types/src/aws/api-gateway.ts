@@ -22,6 +22,6 @@ export function createResponse<T>(statusCode: number, body: T, headers?: Record<
 export function createErrorResponse(statusCode: number, message: string, error?: unknown): APIResponse<{ error: string; details?: unknown }> {
   return createResponse(statusCode, {
     error: message,
-    ...(error && { details: error }),
+    ...(error && typeof error === 'object' ? { details: error } : {}),
   });
 }

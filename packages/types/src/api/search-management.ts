@@ -2,6 +2,8 @@
  * Search Management API types
  */
 
+import type { SavedSearch } from '../models';
+
 export interface ListSearchesRequest {
   limit?: number;
   cursor?: string;
@@ -30,15 +32,4 @@ export interface UpdateSearchRequest {
   name?: string;
   query_params?: Record<string, unknown>;
   alert_enabled?: boolean;
-}
-
-export interface SavedSearch {
-  search_id: string;
-  user_id: string;
-  name: string;
-  query_params: Record<string, unknown>;
-  alert_enabled: boolean;
-  created_at: string; // ISO8601
-  updated_at: string; // ISO8601
-  last_alert_at?: string; // ISO8601
 }

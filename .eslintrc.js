@@ -9,7 +9,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    project: './tsconfig.base.json',
+    project: true, // Auto-detect tsconfig.json files
+    tsconfigRootDir: __dirname,
   },
   env: {
     node: true,
