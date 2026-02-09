@@ -12,7 +12,7 @@
     "deploy": "cdk deploy --all",
     "diff": "cdk diff",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint bin lib --ext .ts",
     "clean": "rm -rf dist cdk.out"
   },
   "dependencies": {
