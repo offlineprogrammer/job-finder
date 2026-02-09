@@ -22,7 +22,7 @@
     "@job-finder/config": "*"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.0",
     "aws-cdk": "^2.120.0",
     "jest": "^29.7.0",
