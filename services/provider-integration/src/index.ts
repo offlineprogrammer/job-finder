@@ -10,7 +10,7 @@ export interface FetchJobsRequest {
   };
 }
 
-export const handler = async (event: FetchJobsRequest, context: Context): Promise<unknown> => {
+export const handler = async (event: FetchJobsRequest, _context: Context): Promise<unknown> => {
   // TODO: Implement provider adapter handler
   logger.info('Fetch jobs request', { provider: event.provider });
   return { jobs: [] };

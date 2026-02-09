@@ -3,7 +3,7 @@
  */
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
-import { createResponse, createErrorResponse } from '@job-finder/types';
+import { createErrorResponse } from '@job-finder/types';
 import { logger } from '@job-finder/utils';
 import { searchJobs } from './handlers/search-jobs';
 import { getJob } from './handlers/get-job';

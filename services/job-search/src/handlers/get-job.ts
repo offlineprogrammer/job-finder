@@ -3,9 +3,7 @@
  */
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { createResponse, createErrorResponse } from '@job-finder/types';
 import { Logger, NotFoundError } from '@job-finder/utils';
-import { GetJobResponse } from '@job-finder/types';
 
 export async function getJob(
   event: APIGatewayProxyEvent,
