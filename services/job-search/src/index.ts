@@ -14,7 +14,7 @@ export const handler = async (
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   const requestLogger = logger.withContext({
-    requestId: context.requestId,
+    requestId: context.awsRequestId,
     path: event.path,
     method: event.httpMethod,
   });
