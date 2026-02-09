@@ -275,6 +275,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Handle job search and retrieval requests from the API Gateway.
 
 **Responsibilities**:
+
 - **GET /api/v1/jobs**: Search jobs with filters (location, salary, keywords, remote)
   - Validates query parameters
   - Builds OpenSearch query with filters
@@ -290,11 +291,13 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: JSON response with job listings or job details
 
 **Dependencies**:
+
 - OpenSearch (read)
 - DynamoDB (read)
 - X-Ray (tracing)
 
 **Error Handling**:
+
 - Invalid query params → 400 Bad Request
 - OpenSearch timeout → 504 Gateway Timeout
 - Rate limit exceeded → 429 Too Many Requests
@@ -306,6 +309,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Manage user profiles and preferences.
 
 **Responsibilities**:
+
 - **GET /api/v1/users/me**: Retrieve current user profile
   - Reads from DynamoDB `users` table
   - Returns user data (email, preferences, created_at)
@@ -319,10 +323,12 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: JSON user profile
 
 **Dependencies**:
+
 - DynamoDB (read/write)
 - Cognito (user ID extraction)
 
 **Error Handling**:
+
 - User not found → 404 Not Found
 - Invalid input → 400 Bad Request
 - DynamoDB throttling → 503 Service Unavailable (retry)
@@ -334,6 +340,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Manage saved searches and future alert functionality.
 
 **Responsibilities**:
+
 - **GET /api/v1/searches**: List user's saved searches
   - Queries DynamoDB `saved_searches` table by user_id
   - Returns list of searches with metadata
@@ -351,10 +358,12 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: JSON saved search object or list
 
 **Dependencies**:
+
 - DynamoDB (read/write/delete)
 - EventBridge (publish events)
 
 **Error Handling**:
+
 - Invalid search params → 400 Bad Request
 - Search not found → 404 Not Found
 - Duplicate search → 409 Conflict
@@ -366,6 +375,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Process job synchronization tasks from SQS queue.
 
 **Responsibilities**:
+
 - Polls SQS queue for sync messages
 - Extracts provider and sync parameters from message
 - Invokes appropriate provider adapter Lambda
@@ -381,6 +391,7 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: Success/failure status per message
 
 **Dependencies**:
+
 - SQS (receive, delete, send to DLQ)
 - Provider adapter Lambdas (invoke)
 - DynamoDB (batch write)
@@ -388,6 +399,7 @@ This document defines the production-ready serverless-first architecture for the
 - EventBridge (publish sync completion events)
 
 **Error Handling**:
+
 - Provider adapter failure → Retry message (up to 3 times) → DLQ
 - DynamoDB throttling → Exponential backoff retry
 - OpenSearch failure → Log error, continue (jobs still in DynamoDB)
@@ -400,6 +412,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Abstract external job provider APIs behind a common interface.
 
 **Responsibilities**:
+
 - **LinkedInAdapter**:
   - Authenticates with LinkedIn OAuth 2.0 (token from Secrets Manager)
   - Calls LinkedIn Job Search API
@@ -416,16 +429,19 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: Array of normalized job objects
 
 **Dependencies**:
+
 - Secrets Manager (API keys, OAuth tokens)
 - External provider APIs (LinkedIn)
 
 **Error Handling**:
+
 - Invalid credentials → Return error (no retry)
 - Rate limit exceeded → Return error with retry-after hint
 - Network timeout → Retry with exponential backoff
 - Invalid response format → Log error, return partial results
 
 **Normalized Job Format**:
+
 ```json
 {
   "job_id": "string",
@@ -450,6 +466,7 @@ This document defines the production-ready serverless-first architecture for the
 **Purpose**: Build complex search queries for OpenSearch.
 
 **Responsibilities**:
+
 - Constructs OpenSearch query DSL from API parameters
 - Applies filters (location, salary range, remote, date range)
 - Handles full-text search with highlighting
@@ -462,10 +479,12 @@ This document defines the production-ready serverless-first architecture for the
 **Output**: OpenSearch query DSL JSON
 
 **Dependencies**:
+
 - OpenSearch (query execution)
 - ElastiCache (optional, for caching)
 
 **Error Handling**:
+
 - Invalid query syntax → Return 400 Bad Request
 - OpenSearch timeout → Return 504 Gateway Timeout
 - Index not found → Return 503 Service Unavailable
@@ -509,6 +528,7 @@ This document defines the production-ready serverless-first architecture for the
 ```
 
 **Performance Targets**:
+
 - P50 latency: < 200ms
 - P95 latency: < 500ms
 - P99 latency: < 1000ms
@@ -558,6 +578,7 @@ This document defines the production-ready serverless-first architecture for the
 ```
 
 **Performance Targets**:
+
 - Sync duration: < 10 minutes for 10K jobs
 - Throughput: 1000 jobs/minute
 - Error rate: < 1%
@@ -604,6 +625,7 @@ This document defines the production-ready serverless-first architecture for the
 **Impact**: Users cannot search jobs or access API
 
 **Mitigation**:
+
 - **Throttling**: Configure per-key limits (100 req/sec), burst limits
 - **Retry Logic**: Client-side exponential backoff
 - **Circuit Breaker**: Client-side circuit breaker pattern
@@ -611,6 +633,7 @@ This document defines the production-ready serverless-first architecture for the
 - **Scaling**: API Gateway auto-scales (10K req/sec default)
 
 **Recovery**:
+
 - Automatic (API Gateway is highly available)
 - If persistent: Contact AWS support, check WAF rules
 
@@ -623,6 +646,7 @@ This document defines the production-ready serverless-first architecture for the
 **Impact**: Request fails, user sees 500 error
 
 **Mitigation**:
+
 - **Timeout**: Set appropriate timeouts (15s for API, 15min for sync)
 - **Memory**: Right-size memory (affects CPU allocation)
 - **Reserved Concurrency**: Prevent one function from consuming all capacity
@@ -631,11 +655,13 @@ This document defines the production-ready serverless-first architecture for the
 - **X-Ray**: Trace errors to identify root cause
 
 **Recovery**:
+
 - Automatic retry (for async invocations)
 - Manual: Fix code, deploy new version
 - Rollback: Use Lambda versions/aliases for instant rollback
 
 **Example Error Handling**:
+
 ```typescript
 try {
   const jobs = await searchOpenSearch(query);
@@ -658,6 +684,7 @@ try {
 **Impact**: Writes/reads fail, sync jobs fail, user operations fail
 
 **Mitigation**:
+
 - **Capacity Mode**: Use on-demand (auto-scaling) for unpredictable traffic
 - **Retry Logic**: Exponential backoff with jitter (AWS SDK built-in)
 - **Batch Operations**: Use BatchGetItem/BatchWriteItem (reduces requests)
@@ -665,13 +692,17 @@ try {
 - **Monitoring**: CloudWatch metrics (ConsumedReadCapacityUnits, ThrottledRequests)
 
 **Recovery**:
+
 - Automatic (on-demand mode scales automatically)
 - If throttling persists: Switch to on-demand, or increase provisioned capacity
 - **Point-in-time Recovery**: Restore table to any point in last 35 days
 
 **Example Retry Logic**:
+
 ```typescript
-const result = await dynamodb.putItem(params).promise()
+const result = await dynamodb
+  .putItem(params)
+  .promise()
   .catch(async (error) => {
     if (error.code === 'ProvisionedThroughputExceededException') {
       await sleep(Math.random() * 1000); // Jitter
@@ -690,6 +721,7 @@ const result = await dynamodb.putItem(params).promise()
 **Impact**: Search queries fail or return incomplete results
 
 **Mitigation**:
+
 - **Multi-AZ**: Deploy OpenSearch across 2+ AZs (automatic failover)
 - **Node Count**: Minimum 2 nodes (data nodes) for redundancy
 - **Health Monitoring**: CloudWatch alarms on cluster health (red/yellow)
@@ -698,11 +730,13 @@ const result = await dynamodb.putItem(params).promise()
 - **Circuit Breaker**: Stop querying OpenSearch if health is red
 
 **Recovery**:
+
 - **Node Failure**: Automatic replacement (if multi-AZ)
 - **Index Corruption**: Restore from snapshot
 - **Cluster Red**: Manual intervention (AWS support), restore from snapshot
 
 **Fallback Strategy**:
+
 ```typescript
 async function searchJobs(query) {
   try {
@@ -726,6 +760,7 @@ async function searchJobs(query) {
 **Impact**: Job syncs fail, jobs become stale
 
 **Mitigation**:
+
 - **Visibility Timeout**: Set to 5 minutes (longer than Lambda timeout)
 - **Dead Letter Queue**: Configure max receives (3), monitor DLQ depth
 - **Batch Processing**: Process messages in batches (reduce partial failures)
@@ -733,15 +768,17 @@ async function searchJobs(query) {
 - **Monitoring**: CloudWatch alarms on DLQ depth, message age
 
 **Recovery**:
+
 - **DLQ Messages**: Investigate failures, fix code, replay messages
 - **Queue Deletion**: Restore from backup (if enabled), or recreate queue
 
 **Idempotency Example**:
+
 ```typescript
 // Use job_id as idempotency key
 await dynamodb.putItem({
   Item: { ...job, job_id },
-  ConditionExpression: 'attribute_not_exists(job_id)' // Skip if exists
+  ConditionExpression: 'attribute_not_exists(job_id)', // Skip if exists
 });
 ```
 
@@ -754,6 +791,7 @@ await dynamodb.putItem({
 **Impact**: Job syncs fail, jobs become stale
 
 **Mitigation**:
+
 - **Retry Logic**: Exponential backoff (respect Retry-After header)
 - **Rate Limiting**: Track API calls, implement client-side rate limiting
 - **Circuit Breaker**: Stop calling API if failure rate > threshold
@@ -761,11 +799,13 @@ await dynamodb.putItem({
 - **Monitoring**: Track API success rate, latency, error codes
 
 **Recovery**:
+
 - **Rate Limit**: Wait for reset (daily limit), or upgrade API tier
 - **Auth Failure**: Refresh OAuth token, update Secrets Manager
 - **API Downtime**: Wait for provider to recover, sync will resume on next schedule
 
 **Circuit Breaker Example**:
+
 ```typescript
 class LinkedInAdapter {
   private failureCount = 0;
@@ -783,7 +823,9 @@ class LinkedInAdapter {
       this.failureCount++;
       if (this.failureCount > 5) {
         this.circuitOpen = true;
-        setTimeout(() => { this.circuitOpen = false; }, 60000); // 1 min
+        setTimeout(() => {
+          this.circuitOpen = false;
+        }, 60000); // 1 min
       }
       throw error;
     }
@@ -800,6 +842,7 @@ class LinkedInAdapter {
 **Impact**: Provider adapters cannot authenticate, syncs fail
 
 **Mitigation**:
+
 - **IAM Permissions**: Least-privilege access (only required secrets)
 - **Caching**: Cache secrets in Lambda memory (reduce API calls)
 - **Rotation**: Enable automatic rotation (if supported)
@@ -807,6 +850,7 @@ class LinkedInAdapter {
 - **Fallback**: Use environment variables (less secure, for dev only)
 
 **Recovery**:
+
 - **Access Denied**: Fix IAM policy, redeploy Lambda
 - **Secret Deleted**: Restore from backup, or recreate secret
 - **Rotation Failure**: Manual rotation, update Lambda to use new secret
@@ -820,6 +864,7 @@ class LinkedInAdapter {
 **Impact**: Lambda cannot reach DynamoDB/OpenSearch (if in VPC), or external APIs
 
 **Mitigation**:
+
 - **VPC Endpoints**: Use VPC endpoints for DynamoDB/OpenSearch (private, no NAT)
 - **Multi-AZ**: Deploy endpoints in multiple AZs
 - **DNS**: Use Route 53 for reliable DNS resolution
@@ -827,6 +872,7 @@ class LinkedInAdapter {
 - **Monitoring**: CloudWatch VPC Flow Logs, endpoint health
 
 **Recovery**:
+
 - **Endpoint Failure**: Automatic failover (if multi-AZ)
 - **NAT Failure**: Replace NAT Gateway, or use VPC endpoints (no NAT needed)
 
@@ -861,6 +907,7 @@ class LinkedInAdapter {
 **RPO (Recovery Point Objective)**: 1 hour (last sync)
 
 **Scenario 1: Single Region Failure**
+
 - **Action**: Failover to secondary region (if configured)
 - **Steps**:
   1. Update Route 53 DNS to point to secondary region
@@ -870,6 +917,7 @@ class LinkedInAdapter {
   5. Verify functionality
 
 **Scenario 2: Data Corruption**
+
 - **Action**: Restore from point-in-time backup
 - **Steps**:
   1. Identify corruption timestamp
@@ -878,6 +926,7 @@ class LinkedInAdapter {
   4. Re-sync jobs from providers (if needed)
 
 **Scenario 3: Accidental Deletion**
+
 - **Action**: Restore from backup or recreate
 - **Steps**:
   1. Restore DynamoDB table (point-in-time recovery)
@@ -892,12 +941,14 @@ class LinkedInAdapter {
 ### Key Metrics
 
 **API Metrics**:
+
 - Request count (per endpoint)
 - Latency (P50, P95, P99)
 - Error rate (4xx, 5xx)
 - Throttle count (429)
 
 **Lambda Metrics**:
+
 - Invocations
 - Duration
 - Errors
@@ -905,17 +956,20 @@ class LinkedInAdapter {
 - Concurrent executions
 
 **DynamoDB Metrics**:
+
 - Consumed read/write capacity
 - Throttled requests
 - User errors
 
 **OpenSearch Metrics**:
+
 - Cluster health (green/yellow/red)
 - Search latency
 - Indexing rate
 - JVM memory pressure
 
 **SQS Metrics**:
+
 - Messages sent/received
 - Messages in flight
 - DLQ depth
@@ -956,7 +1010,7 @@ class LinkedInAdapter {
 
 ### Data Protection
 
-- **Encryption at Rest**: 
+- **Encryption at Rest**:
   - DynamoDB: KMS encryption
   - OpenSearch: KMS encryption
   - SQS: KMS encryption

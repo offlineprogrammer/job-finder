@@ -309,12 +309,7 @@ job-finder/
   "name": "job-finder",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "infrastructure",
-    "services/*",
-    "packages/*",
-    "frontend"
-  ],
+  "workspaces": ["infrastructure", "services/*", "packages/*", "frontend"],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
@@ -461,6 +456,7 @@ job-finder/
 ### Deployment Strategy
 
 **Independent Deployment**:
+
 - Each service can be deployed independently
 - Infrastructure changes require CDK deployment first
 - Frontend can be deployed independently
@@ -489,12 +485,14 @@ npm run deploy:frontend
 ### GitHub Actions Workflow Structure
 
 **`.github/workflows/ci.yml`**:
+
 - Run tests for all packages
 - Lint all code
 - Type check all TypeScript
 - Build all packages (verify builds succeed)
 
 **`.github/workflows/deploy-infrastructure.yml`**:
+
 - Trigger: Push to `main` or manual
 - Steps:
   1. Checkout code
@@ -504,6 +502,7 @@ npm run deploy:frontend
   5. Deploy to dev/stage/prod (based on branch)
 
 **`.github/workflows/deploy-services.yml`**:
+
 - Trigger: Push to `main` or changes in `services/`
 - Steps:
   1. Detect changed services
@@ -512,6 +511,7 @@ npm run deploy:frontend
   4. Deploy Lambda functions (via CDK or SAM)
 
 **`.github/workflows/deploy-frontend.yml`**:
+
 - Trigger: Push to `main` or changes in `frontend/`
 - Steps:
   1. Build Next.js app
@@ -579,21 +579,25 @@ npm run build
 ## Testing Strategy
 
 ### Unit Tests
+
 - **Location**: `services/*/tests/`, `packages/*/tests/`
 - **Framework**: Jest
 - **Coverage**: Target 80%+ for services
 
 ### Integration Tests
+
 - **Location**: `tests/integration/`
 - **Framework**: Jest + AWS SDK mocks
 - **Scope**: Test service interactions
 
 ### E2E Tests
+
 - **Location**: `tests/e2e/`
 - **Framework**: Playwright or Cypress
 - **Scope**: Full user flows
 
 ### CDK Tests
+
 - **Location**: `infrastructure/test/`
 - **Framework**: Jest + CDK assertions
 - **Scope**: Validate infrastructure definitions
@@ -605,6 +609,7 @@ npm run build
 ### Service Structure
 
 Each service follows this pattern:
+
 ```
 service-name/
 ├── src/
@@ -637,6 +642,7 @@ package-name/
 ### Environment Files
 
 **`.env.example`** (per service/package):
+
 ```bash
 # AWS Configuration
 AWS_REGION=us-east-1
@@ -651,11 +657,13 @@ LINKEDIN_API_KEY=your-api-key
 ```
 
 **Environment-Specific**:
+
 - `.env.dev`
 - `.env.staging`
 - `.env.production`
 
 **CDK Environments** (`infrastructure/bin/environments.ts`):
+
 ```typescript
 export const environments = {
   dev: {
@@ -680,6 +688,7 @@ export const environments = {
 ### Workspace Dependencies
 
 **Shared packages** are referenced using workspace protocol:
+
 ```json
 {
   "dependencies": {
@@ -690,6 +699,7 @@ export const environments = {
 ```
 
 **External dependencies** are versioned normally:
+
 ```json
 {
   "dependencies": {
@@ -719,6 +729,7 @@ export const environments = {
 ### Service Documentation
 
 Each service should include:
+
 - **`README.md`**: Service overview, API docs, local development
 - **Inline code comments**: JSDoc for public APIs
 
@@ -737,6 +748,7 @@ Each service should include:
 ### Commit Conventions
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 - `feat(service-name): add new feature`
 - `fix(service-name): fix bug`
 - `docs: update documentation`
@@ -750,15 +762,13 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ### ESLint Configuration
 
 **Root `.eslintrc.js`**:
+
 ```javascript
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -769,6 +779,7 @@ module.exports = {
 ### Prettier Configuration
 
 **`.prettierrc`**:
+
 ```json
 {
   "semi": true,
@@ -833,22 +844,26 @@ module.exports = {
 ## Migration Path
 
 ### Phase 1: Initial Setup
+
 1. Create monorepo structure
 2. Set up workspaces
 3. Create shared packages (types, utils)
 4. Migrate existing code (if any)
 
 ### Phase 2: Service Implementation
+
 1. Implement Job Search Service
 2. Implement User Service
 3. Implement remaining services incrementally
 
 ### Phase 3: Infrastructure
+
 1. Create CDK stacks
 2. Deploy to dev environment
 3. Test end-to-end
 
 ### Phase 4: Frontend
+
 1. Create Next.js app
 2. Integrate with backend APIs
 3. Deploy frontend

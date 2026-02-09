@@ -16,4 +16,4 @@ export const PROVIDERS = {
   MOCK: 'mock',
 } as const;
 
-export type Provider = typeof PROVIDERS[keyof typeof PROVIDERS];
+export type Provider = (typeof PROVIDERS)[keyof typeof PROVIDERS];

@@ -31,17 +31,17 @@ export const env = {
   // AWS Configuration
   AWS_REGION: getEnv('AWS_REGION', 'us-east-1'),
   AWS_ACCOUNT_ID: getEnv('AWS_ACCOUNT_ID'),
-  
+
   // Environment
   ENVIRONMENT: getEnv('ENVIRONMENT', 'dev'),
   LOG_LEVEL: getEnv('LOG_LEVEL', 'info'),
-  
+
   // Service Configuration
   JOBS_TABLE_NAME: getEnv('JOBS_TABLE_NAME'),
   USERS_TABLE_NAME: getEnv('USERS_TABLE_NAME'),
   SAVED_SEARCHES_TABLE_NAME: getEnv('SAVED_SEARCHES_TABLE_NAME'),
   OPENSEARCH_DOMAIN: getEnv('OPENSEARCH_DOMAIN'),
-  
+
   // External APIs
   LINKEDIN_API_KEY: getEnv('LINKEDIN_API_KEY', ''),
   LINKEDIN_OAUTH_SECRET: getEnv('LINKEDIN_OAUTH_SECRET', ''),

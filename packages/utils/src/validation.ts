@@ -9,7 +9,12 @@ export function validateRequired<T>(value: T | undefined | null, fieldName: stri
   return value;
 }
 
-export function validateString(value: unknown, fieldName: string, minLength?: number, maxLength?: number): string {
+export function validateString(
+  value: unknown,
+  fieldName: string,
+  minLength?: number,
+  maxLength?: number
+): string {
   if (typeof value !== 'string') {
     throw new Error(`${fieldName} must be a string`);
   }
@@ -22,7 +27,12 @@ export function validateString(value: unknown, fieldName: string, minLength?: nu
   return value;
 }
 
-export function validateNumber(value: unknown, fieldName: string, min?: number, max?: number): number {
+export function validateNumber(
+  value: unknown,
+  fieldName: string,
+  min?: number,
+  max?: number
+): number {
   const num = Number(value);
   if (isNaN(num)) {
     throw new Error(`${fieldName} must be a number`);
