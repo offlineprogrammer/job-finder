@@ -51,7 +51,6 @@ export class JobSearchStack extends cdk.Stack {
     const {
       deployEnv,
       api,
-      authorizer,
       requestValidator,
       jobsTable,
       openSearchDomain,
