@@ -33,12 +33,13 @@ export function validateSearchRequest(request: Partial<SearchJobsRequest>): Sear
     validated.location = request.location;
   }
 
-  // Validate remote
+  // Validate remote — query params arrive as strings, so cast through unknown before comparing
   if (request.remote !== undefined) {
-    if (typeof request.remote !== 'boolean' && request.remote !== 'true' && request.remote !== 'false') {
+    const remoteRaw = request.remote as unknown;
+    if (typeof remoteRaw !== 'boolean' && remoteRaw !== 'true' && remoteRaw !== 'false') {
       throw new ValidationError('Query parameter "remote" must be a boolean');
     }
-    validated.remote = request.remote === true || request.remote === 'true';
+    validated.remote = remoteRaw === true || remoteRaw === 'true';
   }
 
   // Validate salary range

@@ -30,7 +30,7 @@ describe('searchJobs handler', () => {
         q: 'software engineer',
         limit: '20',
       },
-    } as APIGatewayProxyEvent;
+    } as unknown as APIGatewayProxyEvent;
   });
 
   it('should handle search request successfully', async () => {

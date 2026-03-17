@@ -7,12 +7,14 @@ import { SearchJobsRequest } from '@job-finder/types';
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '@job-finder/config';
 
 export interface OpenSearchQuery {
-  query: {
-    bool: {
-      must?: Array<Record<string, unknown>>;
-      filter?: Array<Record<string, unknown>>;
-    };
-  };
+  query:
+    | {
+        bool: {
+          must?: Array<Record<string, unknown>>;
+          filter?: Array<Record<string, unknown>>;
+        };
+      }
+    | { match_all: Record<string, never> };
   size: number;
   from?: number;
   sort?: Array<Record<string, string>>;
@@ -108,25 +110,25 @@ export function buildSearchQuery(request: SearchJobsRequest): OpenSearchQuery {
     });
   }
 
-  // Build query
+  // Determine query clause upfront to satisfy the union type
+  const queryClause: OpenSearchQuery['query'] =
+    must.length === 0 && filter.length === 0
+      ? { match_all: {} }
+      : {
+          bool: {
+            ...(must.length > 0 && { must }),
+            ...(filter.length > 0 && { filter }),
+          },
+        };
+
   const query: OpenSearchQuery = {
-    query: {
-      bool: {},
-    },
+    query: queryClause,
     size: limit,
     sort: [
       { _score: 'desc' },
       { posted_date: 'desc' },
     ],
   };
-
-  if (must.length > 0) {
-    query.query.bool.must = must;
-  }
-
-  if (filter.length > 0) {
-    query.query.bool.filter = filter;
-  }
 
   // Handle pagination cursor (search_after)
   if (request.cursor) {
@@ -136,13 +138,6 @@ export function buildSearchQuery(request: SearchJobsRequest): OpenSearchQuery {
     } catch (error) {
       // Invalid cursor, ignore it
     }
-  }
-
-  // If no search query, use match_all
-  if (must.length === 0 && filter.length === 0) {
-    query.query = {
-      match_all: {},
-    };
   }
 
   return query;

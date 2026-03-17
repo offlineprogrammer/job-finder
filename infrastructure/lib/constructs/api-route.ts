@@ -46,7 +46,7 @@ export class ApiRoute extends Construct {
       proxy: true,
     });
 
-    // Method options
+    // Method options — built in one shot because MethodOptions fields are readonly
     const methodOptions: apigw.MethodOptions = {
       requestValidator,
       methodResponses: [
@@ -57,15 +57,9 @@ export class ApiRoute extends Construct {
         { statusCode: '500' },
       ],
       ...(throttle && { throttlingBurstLimit: throttle.burstLimit, throttlingRateLimit: throttle.rateLimit }),
+      authorizationType: authorizer ? apigw.AuthorizationType.COGNITO : apigw.AuthorizationType.NONE,
+      ...(authorizer && { authorizer: { authorizerId: authorizer.ref } }),
     };
-
-    // Wire Cognito authorizer if provided
-    if (authorizer) {
-      methodOptions.authorizationType = apigw.AuthorizationType.COGNITO;
-      methodOptions.authorizer = { authorizerId: authorizer.ref };
-    } else {
-      methodOptions.authorizationType = apigw.AuthorizationType.NONE;
-    }
 
     this.method = (resource as apigw.Resource).addMethod(method, integration, methodOptions);
   }

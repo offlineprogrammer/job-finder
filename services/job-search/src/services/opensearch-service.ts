@@ -58,8 +58,8 @@ export async function searchJobsInOpenSearch(
       throw new Error(`OpenSearch request failed: ${response.status} ${response.statusText}`);
     }
 
-    const data: OpenSearchResponse = await response.json();
-    
+    const data = (await response.json()) as OpenSearchResponse;
+
     const jobs = data.hits.hits.map((hit) => hit._source);
     
     // Generate cursor for pagination (using last hit's sort value)
@@ -112,7 +112,7 @@ export async function getAggregationsFromOpenSearch(
       throw new Error(`OpenSearch request failed: ${response.status} ${response.statusText}`);
     }
 
-    const data: OpenSearchResponse = await response.json();
+    const data = (await response.json()) as OpenSearchResponse;
     const aggregations = data.aggregations || {};
 
     // Parse location aggregations
