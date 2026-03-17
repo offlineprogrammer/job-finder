@@ -16,6 +16,7 @@ The Job Search Service handles job search and retrieval functionality for the Jo
 Search jobs with filters.
 
 **Query Parameters:**
+
 - `q` (string, optional): Search query (keywords)
 - `location` (string, optional): Location filter
 - `remote` (boolean, optional): Remote-only filter
@@ -27,6 +28,7 @@ Search jobs with filters.
 - `cursor` (string, optional): Pagination cursor
 
 **Response:**
+
 ```json
 {
   "jobs": [...],
@@ -40,9 +42,11 @@ Search jobs with filters.
 Get detailed job information.
 
 **Path Parameters:**
+
 - `job_id` (string): Composite ID (provider#job_id)
 
 **Response:**
+
 ```json
 {
   "job": {
@@ -60,14 +64,11 @@ Get job statistics (location counts, salary ranges).
 **Query Parameters:** Same filters as search endpoint
 
 **Response:**
+
 ```json
 {
-  "locations": [
-    { "location": "San Francisco, CA", "count": 45 }
-  ],
-  "salary_ranges": [
-    { "range": "100k-150k", "count": 30 }
-  ]
+  "locations": [{ "location": "San Francisco, CA", "count": 45 }],
+  "salary_ranges": [{ "range": "100k-150k", "count": 30 }]
 }
 ```
 

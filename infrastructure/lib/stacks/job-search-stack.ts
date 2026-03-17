@@ -48,13 +48,7 @@ export class JobSearchStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: JobSearchStackProps) {
     super(scope, id, props);
 
-    const {
-      deployEnv,
-      api,
-      requestValidator,
-      jobsTable,
-      openSearchDomain,
-    } = props;
+    const { deployEnv, api, requestValidator, jobsTable, openSearchDomain } = props;
 
     applyStandardTags(this, deployEnv);
 
@@ -71,9 +65,9 @@ export class JobSearchStack extends cdk.Stack {
       reservedConcurrentExecutions: 50,
       deployEnv,
       environment: {
-        JOBS_TABLE_NAME:    jobsTable.tableName,
-        OPENSEARCH_DOMAIN:  openSearchDomain.domainEndpoint,
-        ENVIRONMENT:        deployEnv,
+        JOBS_TABLE_NAME: jobsTable.tableName,
+        OPENSEARCH_DOMAIN: openSearchDomain.domainEndpoint,
+        ENVIRONMENT: deployEnv,
       },
       // Custom IAM policies added below
       extraPolicies: [
@@ -81,15 +75,8 @@ export class JobSearchStack extends cdk.Stack {
         new iam.PolicyStatement({
           sid: 'DynamoDBJobsRead',
           effect: iam.Effect.ALLOW,
-          actions: [
-            'dynamodb:GetItem',
-            'dynamodb:BatchGetItem',
-            'dynamodb:Query',
-          ],
-          resources: [
-            jobsTable.tableArn,
-            `${jobsTable.tableArn}/index/*`,
-          ],
+          actions: ['dynamodb:GetItem', 'dynamodb:BatchGetItem', 'dynamodb:Query'],
+          resources: [jobsTable.tableArn, `${jobsTable.tableArn}/index/*`],
         }),
 
         // OpenSearch — read access
@@ -98,11 +85,9 @@ export class JobSearchStack extends cdk.Stack {
           effect: iam.Effect.ALLOW,
           actions: [
             'es:ESHttpGet',
-            'es:ESHttpPost',  // required for _search
+            'es:ESHttpPost', // required for _search
           ],
-          resources: [
-            `${openSearchDomain.domainArn}/*`,
-          ],
+          resources: [`${openSearchDomain.domainArn}/*`],
         }),
       ],
     });
@@ -113,65 +98,42 @@ export class JobSearchStack extends cdk.Stack {
     // Path structure: /api/v1/jobs, /api/v1/jobs/aggregations,
     //                 /api/v1/jobs/{job_id}
     // ---------------------------------------------------------------
-    const apiResource = api.root
-      .getResource('api')   ?? api.root.addResource('api');
-    const v1 = apiResource
-      .getResource('v1')    ?? apiResource.addResource('v1');
-    const jobsResource = v1
-      .getResource('jobs')  ?? v1.addResource('jobs');
+    const apiResource = api.root.getResource('api') ?? api.root.addResource('api');
+    const v1 = apiResource.getResource('v1') ?? apiResource.addResource('v1');
+    const jobsResource = v1.getResource('jobs') ?? v1.addResource('jobs');
 
     const integration = new apigw.LambdaIntegration(fn.function, { proxy: true });
 
     // GET /api/v1/jobs  — search
-    jobsResource.addMethod(
-      'GET',
-      integration,
-      {
-        authorizationType: apigw.AuthorizationType.NONE,
-        requestValidator,
-        methodResponses: [
-          { statusCode: '200' },
-          { statusCode: '400' },
-          { statusCode: '429' },
-          { statusCode: '500' },
-        ],
-      }
-    );
+    jobsResource.addMethod('GET', integration, {
+      authorizationType: apigw.AuthorizationType.NONE,
+      requestValidator,
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '400' },
+        { statusCode: '429' },
+        { statusCode: '500' },
+      ],
+    });
 
     // GET /api/v1/jobs/aggregations
     const aggregationsResource = jobsResource.addResource('aggregations');
-    aggregationsResource.addMethod(
-      'GET',
-      integration,
-      {
-        authorizationType: apigw.AuthorizationType.NONE,
-        requestValidator,
-        methodResponses: [
-          { statusCode: '200' },
-          { statusCode: '400' },
-          { statusCode: '500' },
-        ],
-      }
-    );
+    aggregationsResource.addMethod('GET', integration, {
+      authorizationType: apigw.AuthorizationType.NONE,
+      requestValidator,
+      methodResponses: [{ statusCode: '200' }, { statusCode: '400' }, { statusCode: '500' }],
+    });
 
     // GET /api/v1/jobs/{job_id}
     const jobIdResource = jobsResource.addResource('{job_id}');
-    jobIdResource.addMethod(
-      'GET',
-      integration,
-      {
-        authorizationType: apigw.AuthorizationType.NONE,
-        requestValidator,
-        requestParameters: {
-          'method.request.path.job_id': true,
-        },
-        methodResponses: [
-          { statusCode: '200' },
-          { statusCode: '404' },
-          { statusCode: '500' },
-        ],
-      }
-    );
+    jobIdResource.addMethod('GET', integration, {
+      authorizationType: apigw.AuthorizationType.NONE,
+      requestValidator,
+      requestParameters: {
+        'method.request.path.job_id': true,
+      },
+      methodResponses: [{ statusCode: '200' }, { statusCode: '404' }, { statusCode: '500' }],
+    });
 
     // ---------------------------------------------------------------
     // Stack outputs

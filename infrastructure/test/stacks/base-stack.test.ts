@@ -53,17 +53,13 @@ describe('BaseStack', () => {
 
     it('includes a rate-based rule', () => {
       template.hasResourceProperties('AWS::WAFv2::WebACL', {
-        Rules: Match.arrayWith([
-          Match.objectLike({ Name: 'RateLimitByIp' }),
-        ]),
+        Rules: Match.arrayWith([Match.objectLike({ Name: 'RateLimitByIp' })]),
       });
     });
 
     it('includes the AWS Managed Common Rule Set', () => {
       template.hasResourceProperties('AWS::WAFv2::WebACL', {
-        Rules: Match.arrayWith([
-          Match.objectLike({ Name: 'AWSManagedRulesCommonRuleSet' }),
-        ]),
+        Rules: Match.arrayWith([Match.objectLike({ Name: 'AWSManagedRulesCommonRuleSet' })]),
       });
     });
   });

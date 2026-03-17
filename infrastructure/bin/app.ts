@@ -24,7 +24,7 @@ if (!envConfig) {
 
 const env: cdk.Environment = {
   account: envConfig.account,
-  region:  envConfig.region,
+  region: envConfig.region,
 };
 
 // -----------------------------------------------------------------------
@@ -52,8 +52,8 @@ const apiStack = new ApiStack(app, `JobFinder-${deployEnv}-Api`, {
   env,
   deployEnv,
   description: 'Job Finder Platform – API Gateway and shared request handling',
-  userPool:   baseStack.userPool,
-  webAclArn:  baseStack.webAcl.attrArn,
+  userPool: baseStack.userPool,
+  webAclArn: baseStack.webAcl.attrArn,
 });
 apiStack.addDependency(baseStack);
 
@@ -62,12 +62,12 @@ const jobSearchStack = new JobSearchStack(app, `JobFinder-${deployEnv}-JobSearch
   env,
   deployEnv,
   description: 'Job Finder Platform – Job Search Lambda and API routes',
-  api:               apiStack.api,
-  authorizer:        apiStack.authorizer,
-  requestValidator:  apiStack.requestValidator,
-  jobsTable:         dataStack.jobsTable,
-  openSearchDomain:  dataStack.openSearchDomain,
-  userPool:          baseStack.userPool,
+  api: apiStack.api,
+  authorizer: apiStack.authorizer,
+  requestValidator: apiStack.requestValidator,
+  jobsTable: dataStack.jobsTable,
+  openSearchDomain: dataStack.openSearchDomain,
+  userPool: baseStack.userPool,
 });
 jobSearchStack.addDependency(dataStack);
 jobSearchStack.addDependency(apiStack);

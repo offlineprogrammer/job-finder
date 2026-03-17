@@ -60,13 +60,13 @@ export class BaseStack extends cdk.Stack {
         tempPasswordValidity: cdk.Duration.days(3),
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-      removalPolicy: deployEnv === 'production'
-        ? cdk.RemovalPolicy.RETAIN
-        : cdk.RemovalPolicy.DESTROY,
+      removalPolicy:
+        deployEnv === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
       // Enable advanced security features in prod
-      advancedSecurityMode: deployEnv === 'production'
-        ? cognito.AdvancedSecurityMode.ENFORCED
-        : cognito.AdvancedSecurityMode.OFF,
+      advancedSecurityMode:
+        deployEnv === 'production'
+          ? cognito.AdvancedSecurityMode.ENFORCED
+          : cognito.AdvancedSecurityMode.OFF,
     });
 
     // App Client — used by the Next.js frontend
@@ -78,17 +78,15 @@ export class BaseStack extends cdk.Stack {
       },
       oAuth: {
         flows: { authorizationCodeGrant: true },
-        scopes: [
-          cognito.OAuthScope.EMAIL,
-          cognito.OAuthScope.OPENID,
-          cognito.OAuthScope.PROFILE,
-        ],
-        callbackUrls: deployEnv === 'production'
-          ? ['https://app.jobfinder.example.com/auth/callback']
-          : ['http://localhost:3000/auth/callback'],
-        logoutUrls: deployEnv === 'production'
-          ? ['https://app.jobfinder.example.com']
-          : ['http://localhost:3000'],
+        scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
+        callbackUrls:
+          deployEnv === 'production'
+            ? ['https://app.jobfinder.example.com/auth/callback']
+            : ['http://localhost:3000/auth/callback'],
+        logoutUrls:
+          deployEnv === 'production'
+            ? ['https://app.jobfinder.example.com']
+            : ['http://localhost:3000'],
       },
       preventUserExistenceErrors: true,
       // Token validity
@@ -177,9 +175,8 @@ export class BaseStack extends cdk.Stack {
           expiration: cdk.Duration.days(deployEnv === 'production' ? 365 : 90),
         },
       ],
-      removalPolicy: deployEnv === 'production'
-        ? cdk.RemovalPolicy.RETAIN
-        : cdk.RemovalPolicy.DESTROY,
+      removalPolicy:
+        deployEnv === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: deployEnv !== 'production',
     });
 

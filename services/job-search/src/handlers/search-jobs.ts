@@ -20,12 +20,20 @@ export async function searchJobs(
     const requestParams: Partial<SearchJobsRequest> = {
       q: event.queryStringParameters?.q,
       location: event.queryStringParameters?.location,
-      remote: event.queryStringParameters?.remote === 'true' || event.queryStringParameters?.remote === '1',
-      min_salary: event.queryStringParameters?.min_salary ? Number(event.queryStringParameters.min_salary) : undefined,
-      max_salary: event.queryStringParameters?.max_salary ? Number(event.queryStringParameters.max_salary) : undefined,
+      remote:
+        event.queryStringParameters?.remote === 'true' ||
+        event.queryStringParameters?.remote === '1',
+      min_salary: event.queryStringParameters?.min_salary
+        ? Number(event.queryStringParameters.min_salary)
+        : undefined,
+      max_salary: event.queryStringParameters?.max_salary
+        ? Number(event.queryStringParameters.max_salary)
+        : undefined,
       provider: event.queryStringParameters?.provider,
       posted_after: event.queryStringParameters?.posted_after,
-      limit: event.queryStringParameters?.limit ? Number(event.queryStringParameters.limit) : undefined,
+      limit: event.queryStringParameters?.limit
+        ? Number(event.queryStringParameters.limit)
+        : undefined,
       cursor: event.queryStringParameters?.cursor,
     };
 

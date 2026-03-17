@@ -37,7 +37,7 @@ export const handler = async (
     if (path.startsWith('/api/v1/jobs/') && httpMethod === 'GET') {
       const pathParts = path.split('/').filter(Boolean);
       const jobId = pathParts[pathParts.length - 1];
-      
+
       if (jobId && jobId !== 'aggregations' && jobId !== 'jobs') {
         return await getJob(event, jobId, requestLogger);
       }

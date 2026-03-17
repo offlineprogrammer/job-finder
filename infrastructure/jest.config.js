@@ -6,8 +6,5 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
-  collectCoverageFrom: [
-    'lib/**/*.ts',
-    '!lib/**/*.d.ts',
-  ],
+  collectCoverageFrom: ['lib/**/*.ts', '!lib/**/*.d.ts'],
 };

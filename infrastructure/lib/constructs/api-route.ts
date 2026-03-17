@@ -32,7 +32,8 @@ export class ApiRoute extends Construct {
   constructor(scope: Construct, id: string, props: ApiRouteProps) {
     super(scope, id);
 
-    const { api, pathParts, method, lambdaFunction, authorizer, requestValidator, throttle } = props;
+    const { api, pathParts, method, lambdaFunction, authorizer, requestValidator, throttle } =
+      props;
 
     // Walk / create nested resources
     let resource: apigw.IResource = api.root;
@@ -56,8 +57,13 @@ export class ApiRoute extends Construct {
         { statusCode: '429' },
         { statusCode: '500' },
       ],
-      ...(throttle && { throttlingBurstLimit: throttle.burstLimit, throttlingRateLimit: throttle.rateLimit }),
-      authorizationType: authorizer ? apigw.AuthorizationType.COGNITO : apigw.AuthorizationType.NONE,
+      ...(throttle && {
+        throttlingBurstLimit: throttle.burstLimit,
+        throttlingRateLimit: throttle.rateLimit,
+      }),
+      authorizationType: authorizer
+        ? apigw.AuthorizationType.COGNITO
+        : apigw.AuthorizationType.NONE,
       ...(authorizer && { authorizer: { authorizerId: authorizer.ref } }),
     };
 

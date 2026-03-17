@@ -59,23 +59,37 @@ export class DataStack extends cdk.Stack {
     const jobsTableConstruct = new JobFinderTable(this, 'JobsTable', {
       tableName: 'jobs',
       partitionKey: { name: 'provider_id#job_id', type: dynamodb.AttributeType.STRING },
-      sortKey:      { name: 'posted_date',         type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'posted_date', type: dynamodb.AttributeType.STRING },
       ttlAttribute: 'expires_at',
       deployEnv,
       gsis: [
         {
           indexName: 'location-remote-index',
-          partitionKey: { name: 'location',     type: dynamodb.AttributeType.STRING },
-          sortKey:      { name: 'remote',        type: dynamodb.AttributeType.NUMBER },
+          partitionKey: { name: 'location', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'remote', type: dynamodb.AttributeType.NUMBER },
           projectionType: dynamodb.ProjectionType.INCLUDE,
-          nonKeyAttributes: ['provider_id#job_id', 'title', 'company', 'min_salary', 'max_salary', 'posted_date'],
+          nonKeyAttributes: [
+            'provider_id#job_id',
+            'title',
+            'company',
+            'min_salary',
+            'max_salary',
+            'posted_date',
+          ],
         },
         {
           indexName: 'company-index',
           partitionKey: { name: 'company', type: dynamodb.AttributeType.STRING },
-          sortKey:      { name: 'posted_date', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'posted_date', type: dynamodb.AttributeType.STRING },
           projectionType: dynamodb.ProjectionType.INCLUDE,
-          nonKeyAttributes: ['provider_id#job_id', 'title', 'location', 'remote', 'min_salary', 'max_salary'],
+          nonKeyAttributes: [
+            'provider_id#job_id',
+            'title',
+            'location',
+            'remote',
+            'min_salary',
+            'max_salary',
+          ],
         },
       ],
     });
@@ -99,8 +113,8 @@ export class DataStack extends cdk.Stack {
     // ---------------------------------------------------------------
     const savedSearchesConstruct = new JobFinderTable(this, 'SavedSearchesTable', {
       tableName: 'saved-searches',
-      partitionKey: { name: 'user_id',   type: dynamodb.AttributeType.STRING },
-      sortKey:      { name: 'search_id', type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: 'user_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'search_id', type: dynamodb.AttributeType.STRING },
       deployEnv,
     });
     this.savedSearchesTable = savedSearchesConstruct.table;
@@ -135,15 +149,13 @@ export class DataStack extends cdk.Stack {
       // Compute
       capacity: {
         dataNodes: isProd ? 3 : 2,
-        dataNodeInstanceType: isProd
-          ? 't3.medium.search'
-          : 't3.small.search',
+        dataNodeInstanceType: isProd ? 't3.medium.search' : 't3.small.search',
         multiAzWithStandbyEnabled: false,
       },
 
       // Storage
       ebs: {
-        volumeSize: isProd ? 100 : 20,    // GB per node
+        volumeSize: isProd ? 100 : 20, // GB per node
         volumeType: cdk.aws_ec2.EbsDeviceVolumeType.GP3,
       },
 

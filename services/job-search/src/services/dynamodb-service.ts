@@ -14,10 +14,7 @@ const JOBS_TABLE = env.JOBS_TABLE_NAME;
 /**
  * Get a single job by ID from DynamoDB
  */
-export async function getJobFromDynamoDB(
-  jobId: string,
-  logger: Logger
-): Promise<Job> {
+export async function getJobFromDynamoDB(jobId: string, logger: Logger): Promise<Job> {
   // Parse composite key: provider_id#job_id
   const parts = jobId.split('#');
   if (parts.length !== 2) {
@@ -73,10 +70,7 @@ export async function getJobFromDynamoDB(
 /**
  * Batch get jobs from DynamoDB
  */
-export async function batchGetJobsFromDynamoDB(
-  jobIds: string[],
-  logger: Logger
-): Promise<Job[]> {
+export async function batchGetJobsFromDynamoDB(jobIds: string[], logger: Logger): Promise<Job[]> {
   if (jobIds.length === 0) {
     return [];
   }
@@ -103,7 +97,7 @@ export async function batchGetJobsFromDynamoDB(
 
     for (let i = 0; i < keys.length; i += batchSize) {
       const batch = keys.slice(i, i + batchSize);
-      
+
       // Note: Using @aws-sdk/lib-dynamodb's BatchGetCommand would be ideal
       // For now, we'll use individual GetCommands (can be optimized later)
       const jobs = await Promise.all(

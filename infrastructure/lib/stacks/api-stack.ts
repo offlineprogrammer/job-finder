@@ -40,9 +40,8 @@ export class ApiStack extends cdk.Stack {
     const accessLogGroup = new logs.LogGroup(this, 'ApiAccessLogs', {
       logGroupName: `/job-finder/${deployEnv}/api-gateway/access-logs`,
       retention: logs.RetentionDays.ONE_MONTH,
-      removalPolicy: deployEnv === 'production'
-        ? cdk.RemovalPolicy.RETAIN
-        : cdk.RemovalPolicy.DESTROY,
+      removalPolicy:
+        deployEnv === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
     });
 
     // ---------------------------------------------------------------
@@ -58,11 +57,12 @@ export class ApiStack extends cdk.Stack {
         throttlingRateLimit: 1000,
         // Enable detailed metrics per resource/method
         metricsEnabled: true,
-        dataTraceEnabled: deployEnv !== 'production',  // disable data trace in prod
-        tracingEnabled: true,  // X-Ray
-        loggingLevel: deployEnv === 'production'
-          ? apigw.MethodLoggingLevel.ERROR
-          : apigw.MethodLoggingLevel.INFO,
+        dataTraceEnabled: deployEnv !== 'production', // disable data trace in prod
+        tracingEnabled: true, // X-Ray
+        loggingLevel:
+          deployEnv === 'production'
+            ? apigw.MethodLoggingLevel.ERROR
+            : apigw.MethodLoggingLevel.INFO,
         accessLogDestination: new apigw.LogGroupLogDestination(accessLogGroup),
         accessLogFormat: apigw.AccessLogFormat.jsonWithStandardFields({
           caller: true,
@@ -78,9 +78,10 @@ export class ApiStack extends cdk.Stack {
       },
       // Minimal default CORS – services add finer-grained settings
       defaultCorsPreflightOptions: {
-        allowOrigins: deployEnv === 'production'
-          ? ['https://app.jobfinder.example.com']
-          : apigw.Cors.ALL_ORIGINS,
+        allowOrigins:
+          deployEnv === 'production'
+            ? ['https://app.jobfinder.example.com']
+            : apigw.Cors.ALL_ORIGINS,
         allowMethods: apigw.Cors.ALL_METHODS,
         allowHeaders: [
           'Content-Type',

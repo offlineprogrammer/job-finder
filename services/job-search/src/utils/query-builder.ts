@@ -27,7 +27,7 @@ export interface OpenSearchQuery {
  */
 export function buildSearchQuery(request: SearchJobsRequest): OpenSearchQuery {
   const limit = Math.min(request.limit || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
-  
+
   const must: Array<Record<string, unknown>> = [];
   const filter: Array<Record<string, unknown>> = [];
 
@@ -70,7 +70,7 @@ export function buildSearchQuery(request: SearchJobsRequest): OpenSearchQuery {
     if (request.max_salary !== undefined) {
       range.lte = request.max_salary;
     }
-    
+
     filter.push({
       bool: {
         should: [
@@ -124,10 +124,7 @@ export function buildSearchQuery(request: SearchJobsRequest): OpenSearchQuery {
   const query: OpenSearchQuery = {
     query: queryClause,
     size: limit,
-    sort: [
-      { _score: 'desc' },
-      { posted_date: 'desc' },
-    ],
+    sort: [{ _score: 'desc' }, { posted_date: 'desc' }],
   };
 
   // Handle pagination cursor (search_after)
@@ -150,7 +147,7 @@ export function buildAggregationQuery(
   request: Omit<SearchJobsRequest, 'limit' | 'cursor'>
 ): OpenSearchQuery {
   const baseQuery = buildSearchQuery({ ...request, limit: 0 });
-  
+
   // Add aggregations
   const queryWithAggregations: OpenSearchQuery & { aggs?: Record<string, unknown> } = {
     ...baseQuery,

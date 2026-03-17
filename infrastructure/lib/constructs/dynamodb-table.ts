@@ -36,11 +36,10 @@ export class JobFinderTable extends Construct {
       pointInTimeRecovery: true,
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
       timeToLiveAttribute: ttlAttribute,
-      removalPolicy: deployEnv === 'production'
-        ? cdk.RemovalPolicy.RETAIN
-        : cdk.RemovalPolicy.DESTROY,
+      removalPolicy:
+        deployEnv === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
       deletionProtection: deployEnv === 'production',
-      stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,  // for future event sourcing
+      stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES, // for future event sourcing
     });
 
     gsis.forEach((gsi) => this.table.addGlobalSecondaryIndex(gsi));

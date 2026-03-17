@@ -36,7 +36,7 @@ export async function searchJobsInOpenSearch(
   logger: Logger
 ): Promise<SearchJobsResponse> {
   const query = buildSearchQuery(request);
-  
+
   logger.debug('OpenSearch query', { query });
 
   try {
@@ -61,7 +61,7 @@ export async function searchJobsInOpenSearch(
     const data = (await response.json()) as OpenSearchResponse;
 
     const jobs = data.hits.hits.map((hit) => hit._source);
-    
+
     // Generate cursor for pagination (using last hit's sort value)
     let nextCursor: string | undefined;
     if (data.hits.hits.length > 0 && data.hits.hits.length === (request.limit || 20)) {
@@ -88,9 +88,12 @@ export async function searchJobsInOpenSearch(
 export async function getAggregationsFromOpenSearch(
   request: Omit<SearchJobsRequest, 'limit' | 'cursor'>,
   logger: Logger
-): Promise<{ locations: Array<{ location: string; count: number }>; salary_ranges: Array<{ range: string; count: number }> }> {
+): Promise<{
+  locations: Array<{ location: string; count: number }>;
+  salary_ranges: Array<{ range: string; count: number }>;
+}> {
   const query = buildAggregationQuery(request);
-  
+
   logger.debug('OpenSearch aggregation query', { query });
 
   try {
@@ -118,21 +121,29 @@ export async function getAggregationsFromOpenSearch(
     // Parse location aggregations
     const locations: Array<{ location: string; count: number }> = [];
     if (aggregations.locations && typeof aggregations.locations === 'object') {
-      const locBuckets = (aggregations.locations as { buckets?: Array<{ key: string; doc_count: number }> }).buckets || [];
-      locations.push(...locBuckets.map((bucket) => ({
-        location: bucket.key,
-        count: bucket.doc_count,
-      })));
+      const locBuckets =
+        (aggregations.locations as { buckets?: Array<{ key: string; doc_count: number }> })
+          .buckets || [];
+      locations.push(
+        ...locBuckets.map((bucket) => ({
+          location: bucket.key,
+          count: bucket.doc_count,
+        }))
+      );
     }
 
     // Parse salary range aggregations
     const salaryRanges: Array<{ range: string; count: number }> = [];
     if (aggregations.salary_ranges && typeof aggregations.salary_ranges === 'object') {
-      const salaryBuckets = (aggregations.salary_ranges as { buckets?: Array<{ key: string; doc_count: number }> }).buckets || [];
-      salaryRanges.push(...salaryBuckets.map((bucket) => ({
-        range: bucket.key,
-        count: bucket.doc_count,
-      })));
+      const salaryBuckets =
+        (aggregations.salary_ranges as { buckets?: Array<{ key: string; doc_count: number }> })
+          .buckets || [];
+      salaryRanges.push(
+        ...salaryBuckets.map((bucket) => ({
+          range: bucket.key,
+          count: bucket.doc_count,
+        }))
+      );
     }
 
     return {

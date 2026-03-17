@@ -33,7 +33,7 @@ describe('DataStack', () => {
       template.hasResourceProperties('AWS::DynamoDB::Table', {
         KeySchema: Match.arrayWith([
           Match.objectLike({ AttributeName: 'provider_id#job_id', KeyType: 'HASH' }),
-          Match.objectLike({ AttributeName: 'posted_date',        KeyType: 'RANGE' }),
+          Match.objectLike({ AttributeName: 'posted_date', KeyType: 'RANGE' }),
         ]),
       });
     });
@@ -67,7 +67,7 @@ describe('DataStack', () => {
     it('creates the saved_searches table with composite key', () => {
       template.hasResourceProperties('AWS::DynamoDB::Table', {
         KeySchema: Match.arrayWith([
-          Match.objectLike({ AttributeName: 'user_id',   KeyType: 'HASH' }),
+          Match.objectLike({ AttributeName: 'user_id', KeyType: 'HASH' }),
           Match.objectLike({ AttributeName: 'search_id', KeyType: 'RANGE' }),
         ]),
       });
@@ -77,7 +77,7 @@ describe('DataStack', () => {
       template.resourcePropertiesCountIs(
         'AWS::DynamoDB::Table',
         { BillingMode: 'PAY_PER_REQUEST' },
-        4   // jobs, users, saved_searches, sync_metadata
+        4 // jobs, users, saved_searches, sync_metadata
       );
     });
 

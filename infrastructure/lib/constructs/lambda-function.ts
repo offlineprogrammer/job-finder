@@ -62,9 +62,8 @@ export class JobFinderFunction extends Construct {
     this.logGroup = new logs.LogGroup(this, 'LogGroup', {
       logGroupName: `/aws/lambda/job-finder-${deployEnv}-${functionName}`,
       retention: logs.RetentionDays.ONE_MONTH,
-      removalPolicy: deployEnv === 'production'
-        ? cdk.RemovalPolicy.RETAIN
-        : cdk.RemovalPolicy.DESTROY,
+      removalPolicy:
+        deployEnv === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
     });
 
     // Optional DLQ for async invocations
@@ -84,7 +83,7 @@ export class JobFinderFunction extends Construct {
       handler,
       memorySize,
       timeout,
-      tracing: lambda.Tracing.ACTIVE,  // X-Ray
+      tracing: lambda.Tracing.ACTIVE, // X-Ray
       insightsVersion: lambda.LambdaInsightsVersion.VERSION_1_0_229_0,
       logGroup: this.logGroup,
       reservedConcurrentExecutions,
@@ -92,7 +91,7 @@ export class JobFinderFunction extends Construct {
       environment: {
         NODE_ENV: deployEnv,
         LOG_LEVEL: deployEnv === 'production' ? 'info' : 'debug',
-        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',  // reuse HTTP connections
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1', // reuse HTTP connections
         ...environment,
       },
     });
