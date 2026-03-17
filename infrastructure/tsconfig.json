@@ -8,6 +8,6 @@
       "@/*": ["./lib/*"]
     }
   },
-  "include": ["bin/**/*", "lib/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*.test.ts"]
+  "include": ["bin/**/*", "lib/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -23,24 +23,29 @@ export const handler = async (
     const { path, httpMethod } = event;
 
     // Route requests based on path and method
+    // GET /api/v1/jobs - Search jobs
     if (path === '/api/v1/jobs' && httpMethod === 'GET') {
       return await searchJobs(event, requestLogger);
     }
 
-    if (path.startsWith('/api/v1/jobs/') && httpMethod === 'GET') {
-      const jobId = path.split('/').pop();
-      if (jobId && !jobId.includes('aggregations')) {
-        return await getJob(event, jobId, requestLogger);
-      }
-    }
-
+    // GET /api/v1/jobs/aggregations - Get aggregations
     if (path === '/api/v1/jobs/aggregations' && httpMethod === 'GET') {
       return await getAggregations(event, requestLogger);
+    }
+
+    // GET /api/v1/jobs/{job_id} - Get single job
+    if (path.startsWith('/api/v1/jobs/') && httpMethod === 'GET') {
+      const pathParts = path.split('/').filter(Boolean);
+      const jobId = pathParts[pathParts.length - 1];
+      
+      if (jobId && jobId !== 'aggregations' && jobId !== 'jobs') {
+        return await getJob(event, jobId, requestLogger);
+      }
     }
 
     return createErrorResponse(404, 'Not Found');
   } catch (error) {
     requestLogger.error('Handler error', error as Error);
-    return createErrorResponse(500, 'Internal Server Error', error);
+    return createErrorResponse(500, 'Internal Server Error');
   }
 };
